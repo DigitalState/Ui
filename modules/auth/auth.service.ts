@@ -74,6 +74,7 @@ export class AuthService {
         let body = new URLSearchParams();
         body.set('username', registration.email);
         body.set('password', registration.password);
+        body.set('data', JSON.stringify(registration.data));
 
         return this.http.post(url, body.toString(), options)
             .map((response: Response) => response.ok)

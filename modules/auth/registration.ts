@@ -3,6 +3,9 @@ export class Registration {
 
     email: string;
     password: string;
-    name: string;
-
+    data: object = {
+        // Sample data properties:
+        // firstName: '';
+        // lastName: '';
+    }
 }
