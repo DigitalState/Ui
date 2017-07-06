@@ -106,6 +106,20 @@ export class AuthService {
             .catch((response: Response) => Observable.throw(response.json()));
     }
 
+    /**
+     * Updates the user account information including e-mail address and password.
+     * @param userData Object containing account info to be updated.
+     */
+    updateUser(userData: any) {
+        let url = this.authUrlPrefix + 'users';
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        let body = userData;
+
+        return this.authHttp.post(url, body, options)
+            .catch((response: Response) => Observable.throw(response.json()));
+    }
+
     isLoggedIn() {
         return tokenNotExpired();
     }
@@ -130,7 +144,9 @@ export class AuthService {
     }
 
     protected createAuthUser(decodedToken: object) {
+        console.log('decodedToken: ', decodedToken);
         this.authUser = new User;
+        this.authUser.uuid = decodedToken['uuid'];
         this.authUser.username = decodedToken['username'];
         this.authUser.identity = decodedToken['identity'];
         this.authUser.identityUuid = decodedToken['identityUuid'];
