@@ -73,6 +73,7 @@ export abstract class DsEntityCrudComponent {
             this.applyPageTitle();
         }
     }
+
     /**
      * Update the page title via a global-state notification. The function looks for the provided title string
      * first, if not provided it tries to use the `pageTitle` property. If none of those is set it exists and the
