@@ -5,6 +5,7 @@ import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { AppState } from '../../../app.service';
 import { AuthService } from './auth.service';
 import { AuthGuardService } from './auth-guard.service';
+import { LogoutComponent } from './logout.component';
 
 export const DS_JWT_TOKEN_NAME = 'token';
 
@@ -21,7 +22,10 @@ export function authHttpServiceFactory(appState: AppState, http: Http, options: 
 @NgModule({
     imports: [
         HttpModule
-    ], 
+    ],
+    declarations: [
+        LogoutComponent
+    ],
     providers: [
         AuthService, 
         AuthGuardService,
