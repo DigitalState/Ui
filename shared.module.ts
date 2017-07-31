@@ -18,6 +18,7 @@ import { DefaultModal } from './components/modals/default-modal/default-modal.co
 import { KeyValuePipe } from './components/pipes/KeyValue.pipe';
 import { DsEntityTranslatePipe } from './components/pipes/EntityTranslate.pipe';
 import { DsEntityTranslationService } from './services/entity-translation.service';
+import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe';
 
 @NgModule({
     imports: [
@@ -30,6 +31,7 @@ import { DsEntityTranslationService } from './services/entity-translation.servic
     declarations: [
         KeyValuePipe,
         DsEntityTranslatePipe,
+        DsStaticTranslatePipe,
     ],
     entryComponents: [
 
@@ -40,6 +42,7 @@ import { DsEntityTranslationService } from './services/entity-translation.servic
     exports: [
         KeyValuePipe,
         DsEntityTranslatePipe,
+        DsStaticTranslatePipe,
         TranslateModule,
     ]
 })
