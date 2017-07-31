@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ToastsManager } from 'ng2-toastr';
 
 import { GlobalState } from "../../global.state";
+import { AppState } from '../../app.service';
 
 import { DsBaseEntityApiService } from '../services/base-entity-api.service';
 import { Link } from '../../digitalstate/models/link';
@@ -58,11 +59,13 @@ export abstract class DsEntityCrudComponent {
     protected location: Location;
     protected toastr: ToastsManager;
     protected globalState: GlobalState;
+    protected appState: AppState;
 
     constructor(protected injector: Injector) {
         this.router = injector.get(Router);
         this.route = injector.get(ActivatedRoute);
         this.globalState = this.injector.get(GlobalState);
+        this.appState = this.injector.get(AppState);
         this.location = injector.get(Location);
         this.translate = injector.get(TranslateService);
         this.toastr = injector.get(ToastsManager);
