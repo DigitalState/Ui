@@ -16,15 +16,15 @@ export default class Tabs {
 
     protected templates = {
         tplTabNav: template(
-            "<ul class='inline-list tabs-navigation show-desktop' role='tablist'>" +
-            "<% forEach(tabs, function(tab) { %>" +
-            "  <li role='presentation' class='tab-menu-item'>" +
-            "    <a href='#<%=tab.tabId%>' id='TabController-<%=tab.tabId%>' class='txt-btn tabs-navigation__button' role='tab' aria-selected='false' aria-controls='<%=tab.tabId%>' tabindex=-1 aria-expanded='false'>" +
-            "      <%=tab.tabTitle%>" +
-            "    </a>" +
-            "  </li>" +
-            "<% }); %>" +
-            "</ul>", {
+            `<ul class="inline-list tabs-navigation" role="tablist">` +
+            `<% forEach(tabs, function(tab) { %>` +
+            `  <li role="presentation" class="tab-menu-item">` +
+            `    <a href="#<%=tab.tabId%>" id="TabController-<%=tab.tabId%>" class="txt-btn tabs-navigation__button" role="tab" aria-selected="false" aria-controls="<%=tab.tabId%>" tabindex=-1 aria-expanded="false">` +
+            `      <%=tab.tabTitle%>` +
+            `    </a>` +
+            `  </li>` +
+            `<% }); %>` +
+            `</ul>`, {
                 'imports': {
                     'forEach': forEach
                 }
