@@ -13,6 +13,7 @@ import { DsBaseEntityApiService } from './services/base-entity-api.service';
 import { DSAuthModule } from './modules/auth/auth.module';
 
 import { MICROSERVICES } from './microservices';
+import { IdentityApiService } from './services/identity.service';
 import { DsBackLink } from './components/back-link.component';
 import { DefaultModal } from './components/modals/default-modal/default-modal.component';
 import { KeyValuePipe } from './components/pipes/KeyValue.pipe';
@@ -38,6 +39,7 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
     ],
     providers: [
         DsEntityTranslationService,
+        IdentityApiService
     ],
     exports: [
         KeyValuePipe,
