@@ -128,7 +128,7 @@ export class AuthService {
         const tokenName = this.appState.get('jwtTokenName');
         localStorage.removeItem(tokenName);
         this.authUser = null;
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login'], { queryParams: { redirectUrl: '/' }});
     }
 
     protected saveToken(token: string) {
