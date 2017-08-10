@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { DsStaticTranslationService } from '../../services/static-translation.service';
 
 /**
  * Assuming translations are pre-loaded in all supported languages, you can use this pipe to load
@@ -8,13 +8,13 @@ import { TranslateService } from '@ngx-translate/core';
 @Pipe({name: 'staticTranslate'})
 export class DsStaticTranslatePipe implements PipeTransform {
 
-    constructor(protected translate: TranslateService) {
+    constructor(protected staticTranslate: DsStaticTranslationService) {
 
     }
 
     transform(value: any, args: string[]): any {
         let lang = args[0];
-        let ts = this.translate.getParsedResult(this.translate.translations[lang], value);
+        let ts = this.staticTranslate.instant(lang, value);
         return ts;
     }
 }
