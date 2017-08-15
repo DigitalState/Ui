@@ -33,6 +33,11 @@ export abstract class DsEntityCrudComponent {
     protected entityUrlPrefix: string;
 
     protected backLink: Link;
+
+    /**
+     * The title of the primary card in the page.
+     * @type {string}
+     */
     protected headerTitle: string;
 
     /**
@@ -48,6 +53,11 @@ export abstract class DsEntityCrudComponent {
     protected entityParentUrlParam: string;
 
     /**
+     * App configurations retrieved from the AppState
+     */
+    protected config: any;
+
+    /**
      * The Enity API service is not injected into this base component class because
      * the API service configurations are Microservice-specific.
      */
@@ -61,6 +71,7 @@ export abstract class DsEntityCrudComponent {
     protected globalState: GlobalState;
     protected appState: AppState;
 
+
     constructor(protected injector: Injector) {
         this.router = injector.get(Router);
         this.route = injector.get(ActivatedRoute);
@@ -69,6 +80,8 @@ export abstract class DsEntityCrudComponent {
         this.location = injector.get(Location);
         this.translate = injector.get(TranslateService);
         this.toastr = injector.get(ToastsManager);
+
+        this.config = this.appState.get('config');
     }
 
     ngOnInit() {

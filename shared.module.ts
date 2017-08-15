@@ -4,6 +4,8 @@ import { Routes, RouterModule }  from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MdProgressBarModule } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
+import { DateFormatPipe, LocalTimePipe, MomentModule } from 'angular2-moment';
+import { MomentTimezoneModule } from 'angular-moment-timezone';
 
 import { AppTranslationModule } from '../app.translation.module';
 import { AppState } from '../app.service';
@@ -28,6 +30,8 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
         RouterModule,
         FormsModule,
         TranslateModule,
+        MomentModule,
+        MomentTimezoneModule,
         DSAuthModule,
     ],
     declarations: [
@@ -39,6 +43,7 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
 
     ],
     providers: [
+        DateFormatPipe,
         DsEntityTranslationService,
         DsStaticTranslationService,
         IdentityApiService
@@ -48,6 +53,8 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
         DsEntityTranslatePipe,
         DsStaticTranslatePipe,
         TranslateModule,
+        DateFormatPipe,
+        LocalTimePipe,
     ]
 })
 export class DsSharedModule {
