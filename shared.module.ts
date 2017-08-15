@@ -19,6 +19,7 @@ import { IdentityApiService } from './services/identity.service';
 import { DsBackLink } from './components/back-link.component';
 import { DefaultModal } from './components/modals/default-modal/default-modal.component';
 import { KeyValuePipe } from './components/pipes/KeyValue.pipe';
+import { IsEmpty, IsNotEmpty } from './components/pipes/lodash-helper.pipe';
 import { DsEntityTranslatePipe } from './components/pipes/EntityTranslate.pipe';
 import { DsEntityTranslationService } from './services/entity-translation.service';
 import { DsStaticTranslationService } from './services/static-translation.service';
@@ -35,6 +36,7 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
         DSAuthModule,
     ],
     declarations: [
+        IsEmpty, IsNotEmpty, // lodash helpers
         KeyValuePipe,
         DsEntityTranslatePipe,
         DsStaticTranslatePipe,
@@ -49,6 +51,7 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
         IdentityApiService
     ],
     exports: [
+        IsEmpty, IsNotEmpty, // lodash helpers
         KeyValuePipe,
         DsEntityTranslatePipe,
         DsStaticTranslatePipe,
