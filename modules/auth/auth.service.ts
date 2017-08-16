@@ -1,15 +1,19 @@
 import { Inject, Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 
 import { tokenNotExpired, AuthHttp, JwtHelper } from 'angular2-jwt';
+import { Locker } from 'angular-safeguard';
 
 import { AppState } from '../../../app.service';
 import { Registration } from './registration';
 import { User } from './user';
+import { IdentityUtils } from '../../utils/identity.utils';
 
 import { Observable } from 'rxjs';
 import 'rxjs/Rx';
+
+import isEmpty from 'lodash/isEmpty';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +27,8 @@ export class AuthService {
     constructor(protected appState: AppState,
                 protected router: Router,
                 protected http: Http,
-                protected authHttp: AuthHttp) {
+                protected authHttp: AuthHttp,
+                protected locker: Locker) {
 
         const config = appState.get('microservices').authentication;
         this.authUrlPrefix = config.entrypoint.url;
@@ -51,7 +56,6 @@ export class AuthService {
 
     getToken() {
         // @todo: change this to the real token
-        // const testToken = 'eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX0lORElWSURVQUwiLCJST0xFX1VTRVIiXSwidXNlcm5hbWUiOiJ1c2VyQGRzIiwiaXAiOiI6OjEiLCJjbGkiOiI0YzZjMGRhMyIsImlkZW4iOiJJbmRpdmlkdWFsIiwiaWRlbl91dWlkIjoiYzc1MDhlMDgtNWVhZC00MjhiLTgwMjItYTI1MzNlMDBhZGVkIiwiaWF0IjoxNDk2MTYwOTY1LCJleHAiOjE0OTYyNDczNjV9.BL0lk4R2C5qkFPAmIE2THggk27nQI_WZwCDBuhmnjpsZtVq0x4YtLWFO6-_ehGW1g42NAknSondx7D3KAj6wnKsTTZpPUw4NoOJOeUXQlxXeTenqNCjczEW7QOuZeXsz5KLrAYHN1V5YgXk0r6KfNldvp_b4KpTKxalldq7IO3uaO8Iv4C-cWMnnFb1XeSJLtyo5xqL5T4T7EJrH7avYD74zPpQ_5n3o7KnErcK1phc3LSMsxqVPtayzhfxU-GnQbSI1ZTT5KYR30h_Xcc1ja_xKLlClBDalSH9-1wz3eq66vjBwsSgKeA-E7lEOh_01J2vtyZBOgX8qFvIDIGKFM7i2L8UEW6H38lMj7T7ZP-IEpb_MOxwZmmhBXFtaxJEchcG4wcdGTEB6P6oswHLpmrz9aZHHkKji2IEiOaQCGhurt_ea_VBdDfH4qOQQcQOd-34s0gVpQ8evpSXF9tReKMxapntH2-e3MN55Otjobj4JzYlw0VoDwEoIUDBZ2Nh-_yY5zswfGgdAGAVwdETnRmnJm0KxD0dKblbmUvSpEdjs0bMK5ZNvxrTbOuqvy53yUZcN01smsRe1GGIYJLLPJK8BPbbYr3144jBmV2cFxXTo-3HivEDW-kv0nl5DKlHwS5VycTEQOHa1ovLyp_0zHCZ45RvdvUQy3sDh6tTmf8U';
         const tokenName = this.appState.get('jwtTokenName');
         return localStorage.getItem(tokenName);
     }
@@ -88,7 +92,7 @@ export class AuthService {
      * @param password
      * @return Observable
      */
-    login(email: string, password: string) {
+    login(email: string, password: string): Observable<any> {
         let url = this.loginPath;
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let options = new RequestOptions({ headers: headers });
@@ -103,7 +107,49 @@ export class AuthService {
                 this.saveToken(response.json().token);
                 return response.ok;
             })
+            .flatMap((isSuccess) => {
+                if (isSuccess) {
+                    return this.fetchUserExtra();
+                }
+                else {
+                    throw 'login error: initial token request failed';
+                }
+            })
             .catch((response: Response) => Observable.throw(response.json()));
+    }
+
+    /**
+     *
+     * @returns {Observable<R|T>}
+     */
+    fetchUserExtra(): Observable<boolean> {
+        // Load the user's Identity info
+        const identitiesUrlPrefix = this.appState.get('microservices').identities.entrypoint.url;
+        let user = this.getAuthUser();
+
+        if (user) {
+            let userIdentityUrlPrefix = IdentityUtils.getIdentityUrlPrefix(user.identity);
+            let url = identitiesUrlPrefix + userIdentityUrlPrefix + '/' + user.identityUuid;
+            let headers = new Headers({
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + this.getToken()
+            });
+            let options = new RequestOptions({ headers: headers });
+
+            return this.http.get(url, options)
+                .map((response: Response) => {
+                    if (response.ok) {
+                        // @Fixme Refactor this to have it append data in case `user` property is already set in locker
+                        this.saveUserExtra(response.json());
+                    }
+                    return response.ok;
+                })
+                .catch((response: Response) => Observable.throw(response.json()));
+        }
+        else {
+            throw 'loadUserExtra error: no authorized user is defined';
+        }
     }
 
     /**
@@ -128,6 +174,7 @@ export class AuthService {
         const tokenName = this.appState.get('jwtTokenName');
         localStorage.removeItem(tokenName);
         this.authUser = null;
+        this.locker.remove('user-extra')
         this.router.navigate(['/login'], { queryParams: { redirectUrl: '/' }});
     }
 
@@ -151,6 +198,25 @@ export class AuthService {
         this.authUser.identity = decodedToken['identity'];
         this.authUser.identityUuid = decodedToken['identityUuid'];
         this.authUser.roles = decodedToken['roles'];
+
+        // Attempt to load the user extra props from storage
+        if (isEmpty(this.authUser.extra)) {
+            this.loadUserExtra();
+        }
     }
 
+    protected loadUserExtra() {
+        if (this.locker.has('user-extra')) {
+            let userExtra = this.locker.get('user-extra');
+            this.authUser.extra = userExtra;
+        }
+    }
+
+    protected saveUserExtra(userExtra: any) {
+        this.locker.set('user-extra', userExtra);
+
+        if (this.authUser) {
+            this.authUser.extra = userExtra;
+        }
+    }
 }
