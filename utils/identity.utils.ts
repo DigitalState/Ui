@@ -22,10 +22,30 @@ export class IdentityUtils {
 
     static getSingular(identityType: string): string {
         switch (identityType) {
-            case 'Anonymous': return 'anonymouse';
-            case 'Individual': return 'individual';
-            case 'Staff': return 'staff';
-            default: return null
+            case 'Anonymous':
+            case 'anonymouses':
+                return 'anonymous';
+            case 'Individual':
+            case 'individuals':
+                return 'individual';
+            case 'Staff':
+            case 'staffs':
+                return 'staff';
+            default:
+                return null;
+        }
+    }
+
+    static getPlural(identityType: string): string {
+        switch (identityType.toLowerCase()) {
+            case 'anonymous':
+                return 'anonymouses';
+            case 'individual':
+                return 'individuals';
+            case 'staff':
+                return 'staffs';
+            default:
+                return null;
         }
     }
 }
