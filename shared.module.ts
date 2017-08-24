@@ -4,7 +4,7 @@ import { Routes, RouterModule }  from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MdProgressBarModule } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
-import { DateFormatPipe, LocalTimePipe, MomentModule } from 'angular2-moment';
+import { MomentModule, DateFormatPipe, LocalTimePipe, LocalePipe, TimeAgoPipe } from 'angular2-moment';
 import { MomentTimezoneModule } from 'angular-moment-timezone';
 
 import { AppTranslationModule } from '../app.translation.module';
@@ -18,6 +18,7 @@ import { MICROSERVICES } from './microservices';
 import { IdentityApiService } from './services/identity.service';
 import { DsBackLink } from './components/back-link.component';
 import { DefaultModal } from './components/modals/default-modal/default-modal.component';
+import { DsRelativeTimeComponent } from './components/relative-time.component';
 import { KeyValuePipe } from './components/pipes/KeyValue.pipe';
 import { IsEmpty, IsNotEmpty } from './components/pipes/lodash-helper.pipe';
 import { DsEntityTranslatePipe } from './components/pipes/EntityTranslate.pipe';
@@ -40,6 +41,7 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
         KeyValuePipe,
         DsEntityTranslatePipe,
         DsStaticTranslatePipe,
+        DsRelativeTimeComponent,
     ],
     entryComponents: [
 
@@ -57,7 +59,10 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
         DsStaticTranslatePipe,
         TranslateModule,
         DateFormatPipe,
+        LocalePipe,
         LocalTimePipe,
+        TimeAgoPipe,
+        DsRelativeTimeComponent,
     ]
 })
 export class DsSharedModule {
