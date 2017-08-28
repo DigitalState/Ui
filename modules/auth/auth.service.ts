@@ -14,6 +14,8 @@ import { Observable } from 'rxjs';
 import 'rxjs/Rx';
 
 import isEmpty from 'lodash/isEmpty';
+import { DsEnvironmentConfig } from '../../providers/environment.provider';
+import { MicroservicesDefinition } from '../../../digitalstate/microservices';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +23,7 @@ export class AuthService {
     protected authUrlPrefix;
     protected registrationPath;
     protected loginPath;
+    protected anonymousPath;
     protected jwtHelper: JwtHelper;
     protected authUser;
 
@@ -28,11 +31,17 @@ export class AuthService {
                 protected router: Router,
                 protected http: Http,
                 protected authHttp: AuthHttp,
-                protected locker: Locker) {
+                protected locker: Locker,
+                dsEnv: DsEnvironmentConfig) {
+
+        // Load the microservices settings here since the AuthService is a super dependency
+        let msDefinition = new MicroservicesDefinition(dsEnv);
+        appState.set('microservices', msDefinition.getAll());
 
         const config = appState.get('microservices').authentication;
         this.authUrlPrefix = config.entrypoint.url;
         this.registrationPath = this.authUrlPrefix + config.paths.registration;
+        this.anonymousPath = this.authUrlPrefix + config.paths.anonymous;
         this.loginPath = this.authUrlPrefix + config.paths.login;
         this.jwtHelper = new JwtHelper();
 
@@ -42,6 +51,18 @@ export class AuthService {
             const decodedToken = this.decodeToken(token);
             this.createAuthUser(decodedToken);
         }
+    }
+
+    getAnonymousToken(): Observable<string> {
+        let url = this.anonymousPath;
+        let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.post(url, '', options)
+            .map((response: Response) => {
+                return response.json().token;
+            })
+            .catch((response: Response) => Observable.throw(response.json()));
     }
 
     getAuthUser(): User {

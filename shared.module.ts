@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule, DateFormatPipe, LocalTimePipe, LocalePipe, TimeAgoPipe } from 'angular2-moment';
 import { MomentTimezoneModule } from 'angular-moment-timezone';
 
-import { AppTranslationModule } from '../app.translation.module';
+// import { AppTranslationModule } from '../app.translation.module';
 import { AppState } from '../app.service';
 import { NgaModule } from '../../theme/nga.module';
 
@@ -15,6 +15,8 @@ import { DsBaseEntityApiService } from './services/base-entity-api.service';
 import { DSAuthModule } from './modules/auth/auth.module';
 
 import { MICROSERVICES } from './microservices';
+import { CmsApiService } from './services/cms.service';
+import { CmsTranslateLoader } from './services/cms-translation-loader.service';
 import { IdentityApiService } from './services/identity.service';
 import { DsBackLink } from './components/back-link.component';
 import { DefaultModal } from './components/modals/default-modal/default-modal.component';
@@ -50,7 +52,9 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
         DateFormatPipe,
         DsEntityTranslationService,
         DsStaticTranslationService,
-        IdentityApiService
+        CmsApiService,
+        CmsTranslateLoader,
+        IdentityApiService,
     ],
     exports: [
         IsEmpty, IsNotEmpty, // lodash helpers
