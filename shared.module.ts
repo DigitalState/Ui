@@ -6,6 +6,7 @@ import { MdProgressBarModule } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule, DateFormatPipe, LocalTimePipe, LocalePipe, TimeAgoPipe } from 'angular2-moment';
 import { MomentTimezoneModule } from 'angular-moment-timezone';
+import { ClipboardModule } from 'ngx-clipboard';
 
 // import { AppTranslationModule } from '../app.translation.module';
 import { AppState } from '../app.service';
@@ -27,6 +28,7 @@ import { DsEntityTranslatePipe } from './components/pipes/EntityTranslate.pipe';
 import { DsEntityTranslationService } from './services/entity-translation.service';
 import { DsStaticTranslationService } from './services/static-translation.service';
 import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe';
+import { DsClipboardCopyComponent } from './components/directives/ds-clipboard-copy.component';
 
 @NgModule({
     imports: [
@@ -36,6 +38,7 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
         TranslateModule,
         MomentModule,
         MomentTimezoneModule,
+        ClipboardModule,
         DSAuthModule,
     ],
     declarations: [
@@ -44,6 +47,7 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
         DsEntityTranslatePipe,
         DsStaticTranslatePipe,
         DsRelativeTimeComponent,
+        DsClipboardCopyComponent,
     ],
     entryComponents: [
 
@@ -57,16 +61,18 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
         IdentityApiService,
     ],
     exports: [
+        TranslateModule,
+        ClipboardModule,
         IsEmpty, IsNotEmpty, // lodash helpers
         KeyValuePipe,
         DsEntityTranslatePipe,
         DsStaticTranslatePipe,
-        TranslateModule,
         DateFormatPipe,
         LocalePipe,
         LocalTimePipe,
         TimeAgoPipe,
         DsRelativeTimeComponent,
+        DsClipboardCopyComponent,
     ]
 })
 export class DsSharedModule {
