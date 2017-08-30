@@ -1,14 +1,15 @@
 import { Inject, Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { Restangular } from 'ngx-restangular';
 
-import { MicroserviceConfig, microserviceRestangularFactory } from '../providers/microservice.provider';
 import { AppState } from '../../app.service';
 import { AuthService } from '../modules/auth/auth.service';
 import { DsBaseEntityApiService } from './base-entity-api.service';
 
 import 'rxjs/Rx';
 import { Observable } from 'rxjs/Observable';
+
+import isObject from 'lodash/isObject';
+import merge from 'lodash/merge';
 
 @Injectable()
 export class CmsApiService extends DsBaseEntityApiService<any> {
@@ -20,6 +21,7 @@ export class CmsApiService extends DsBaseEntityApiService<any> {
 
     cmsUrlPrefix: string;
     contentPath: string;
+    translationSlugs: Array<string>;
 
     constructor(protected http: Http,
                 protected appState: AppState,
@@ -29,6 +31,7 @@ export class CmsApiService extends DsBaseEntityApiService<any> {
         const config = appState.get('microservices').cms;
         this.cmsUrlPrefix = config.entrypoint.url;
         this.contentPath = this.cmsUrlPrefix + config.paths.content;
+        this.translationSlugs = config.translationSlugs;
     }
 
     getTranslations(): Observable<any> {
@@ -36,17 +39,26 @@ export class CmsApiService extends DsBaseEntityApiService<any> {
             let url = this.contentPath;
             let options = new RequestOptions({
                 headers: headers,
-                params: {
-                    datas: [ 'translation' ],
+                search: {
+                    'datas[]': this.translationSlugs,
                 }
             });
 
             return this.http.get(url, options)
                 .map((response: Response) => {
-                    return response.json().datas['translation'];
+                    // return response.json().datas['translation'];
+                    return this.mergeTranslations(response.json().datas);
                 })
                 .catch((response: Response) => Observable.throw(response.json()));
         });
+    }
+
+    protected mergeTranslations(translationsContainer: any): any {
+        let mergedTranslations = {};
+        this.translationSlugs.forEach((translationKey) => {
+            mergedTranslations = merge(mergedTranslations, translationsContainer[translationKey]);
+        });
+        return mergedTranslations;
     }
 
     protected getRequestHeaders(): Observable<Headers> {
