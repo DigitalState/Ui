@@ -25,6 +25,9 @@ export class CmsTranslateLoader extends TranslateHttpLoader {
                     let mergedTranslations = merge(localTranslations, cmsTranslations[lang]);
                     return Observable.of(mergedTranslations);
                 }
+            }).catch((response: Response) => {
+                console.warn(`Error while fetching CMS translations due to ${response.statusText}. Falling back to local translations.`);
+                return Observable.of(localTranslations);
             });
         });
     }
