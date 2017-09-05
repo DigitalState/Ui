@@ -67,7 +67,7 @@ export class CmsApiService extends DsBaseEntityApiService<any> {
                         ? this.mergeTranslations(response.json().datas)
                         : response.json().datas;
                 })
-                .catch((response: Response) => Observable.throw(response);
+                .catch((response: Response) => Observable.throw(response));
         });
     }
 
