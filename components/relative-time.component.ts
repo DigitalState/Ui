@@ -10,7 +10,7 @@ import { Subscriber } from "rxjs/Subscriber";
 @Component({
     selector: 'relative-time',
     'template': `
-		<span title="{{tooltip}}" data-toggle="tooltip" data-placement="top" class="border-b-dotted cursor-pointer">
+		<span title="{{tooltip}}" data-toggle="tooltip" data-placement="top" class="cursor-pointer">
         {{timeOutput}}
 	    </span>`
 })
