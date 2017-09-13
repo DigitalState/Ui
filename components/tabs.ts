@@ -113,6 +113,9 @@ export default class Tabs {
     protected createTabNav() {
         this.tabNav = true;
 
+        // Avoid duplication of tabs due to the `prependTo` call below
+        this.$container.find('.inline-list').remove();
+
         this.$tabNav = $(this.templates.tplTabNav({
             "tabs": this.tabData
         })).prependTo(this.$container);
@@ -151,6 +154,13 @@ export default class Tabs {
             }
         });
     };
+
+    protected unbindNavEvents() {
+        if (this.$tabNav) {
+            this.$tabNav.off("keydown");
+            this.$tabNav.off("click");
+        }
+    }
 
     /**
      * helper to identify if the clicked tab is what's currently open
@@ -319,6 +329,12 @@ export default class Tabs {
             });
     };
 
+    protected unbindAccordionEvents() {
+        if (this.$accordion) {
+            this.$accordion.off("keydown").find(".tabs-container__title").off("click");
+        }
+    }
+
     protected handleAccordion($tab_panel) {
         if (!this.isCurrentTab($tab_panel)) {
             this.openAccordion($tab_panel);
@@ -354,8 +370,8 @@ export default class Tabs {
         this.$accordion = this.$container.find(".accordion-wrapper").attr("role","tablist");
         this.bindAccordionEvents();
 
-        // if there's more than 1 tab, then a tab navigation is created on desktop
-        if (this.$tab_panels.length > 1) {
+        // if there's more than 0 tab, then a tab navigation is created on desktop
+        if (this.$tab_panels.length > 0) {
             this.createTabNav();
             this.bindNavEvents();
         }
@@ -367,6 +383,10 @@ export default class Tabs {
         this.openTab($startingTab);
     };
 
+    destroy() {
+        this.unbindNavEvents();
+        this.unbindAccordionEvents();
+    }
 }
 // $(function () {
 //     window['Tabs'] = Tabs;
