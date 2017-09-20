@@ -89,6 +89,14 @@ export class CmsApiService extends DsBaseEntityApiService<any> {
         });
     }
 
+    getFormioFormTranslations(formId: string): Observable<any> {
+        const slug = 'formio-' + formId;
+        return this.getTranslationBySlug(slug).flatMap((entities: Array<any>) => {
+            let entity = find(entities, (item) => item.slug === slug);
+            return Observable.of(entity ? entity.data : null);
+        });
+    }
+
     saveTranslation(slug: string, value: any): Observable<any> {
         // First fetch the UUID of the datas entity of the translation using the slug
         return this.getTranslationBySlug(slug).flatMap((entities: Array<any>) => {
