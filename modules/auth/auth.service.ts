@@ -9,13 +9,14 @@ import { AppState } from '../../../app.service';
 import { Registration } from './registration';
 import { User } from './user';
 import { IdentityUtils } from '../../utils/identity.utils';
+import { DsEnvironmentConfig } from '../../providers/environment.provider';
+import { MicroservicesDefinition } from '../../../digitalstate/microservices';
 
 import { Observable } from 'rxjs';
 import 'rxjs/Rx';
 
 import isEmpty from 'lodash/isEmpty';
-import { DsEnvironmentConfig } from '../../providers/environment.provider';
-import { MicroservicesDefinition } from '../../../digitalstate/microservices';
+import pick from 'lodash/pick';
 
 @Injectable()
 export class AuthService {
@@ -35,8 +36,8 @@ export class AuthService {
                 dsEnv: DsEnvironmentConfig) {
 
         // Load the microservices settings here since the AuthService is a super dependency
-        let msDefinition = new MicroservicesDefinition(dsEnv);
-        appState.set('microservices', msDefinition.getAll());
+        let microservices = new MicroservicesDefinition(dsEnv).getAll();
+        appState.set('microservices', microservices);
 
         const config = appState.get('microservices').authentication;
         this.authUrlPrefix = config.entrypoint.url;
