@@ -101,12 +101,13 @@ export class FormioModalFrameComponent implements OnInit {
             // Set additional form settings
             formData.language = this.translate.currentLang;
 
-            console.log('Received form result', formData);
+            console.log('Received form schema', formData);
 
             this.sendMessage('formData', formData);
             this.isFormioFormReady = true;
-        }, (error) => { // error
+        }, (error: DsError) => { // error
             console.warn('Error while FormioModalFrameComponent::handleMessageReady', error);
+            this.showError(error);
         });
     }
 
@@ -126,18 +127,33 @@ export class FormioModalFrameComponent implements OnInit {
         this.formioController.submitFormioForm(data.payload).subscribe((submissionResult) => {
             console.log('Received form result', submissionResult);
             this.formioController.handleFormioFormEvent('submissionResult', submissionResult);
-        }, (error) => { // error
+        }, (error: DsError) => { // error
             console.warn('Error while FormioModalFrameComponent::handleMessageFormSubmit', error);
+            this.showError(error);
         });
     }
 
     protected sendMessage(type: string, payload: any) {
-        this.iframe.nativeElement.contentWindow.postMessage({
-            channel: this.commChannel,
-            tag: this.windowId,
-            type: type,
-            payload: payload
-        }, '*');
+        if (this.iframe && this.iframe.nativeElement && this.iframe.nativeElement.contentWindow) {
+            this.iframe.nativeElement.contentWindow.postMessage({
+                channel: this.commChannel,
+                tag: this.windowId,
+                type: type,
+                payload: payload
+            }, '*');
+        }
+        else {
+            console.warn('Target IFrame window is not available');
+        }
     }
 
+    protected showError(error: DsError) {
+        let title = this.translate.instant(error.title);
+        let message = this.translate.instant(error.message);
+        this.modalContent = `
+        <div class="alert alert-danger" role="alert">
+          <h4 class="alert-heading">${title}</h4>
+          <p>${message}</p>
+        </div>`;
+    }
 }

@@ -10,8 +10,8 @@
 	</button>
 </div>
 <div class="modal-body">
-	<md-progress-spinner [hidden]="isFormioFormReady" mode="indeterminate"></md-progress-spinner>
-	<div class="modal-body-content" [innerHTML]="modalContent">
+	<md-progress-spinner [hidden]="isFormioFormReady || modalContent" mode="indeterminate"></md-progress-spinner>
+	<div class="modal-body-content container-fluid" [innerHTML]="modalContent">
 		{{modalContent}}
 	</div>
 	<iframe #iframe [src]="frameSrc"></iframe>

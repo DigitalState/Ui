@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
+import { Response } from '@angular/http';
 
 import { Restangular } from 'ngx-restangular';
 
@@ -101,18 +102,30 @@ export class FormioApiService {
      * @param error
      * @returns {Promise<never>}
      */
-    protected handleActivationRequestError(error: any): any {
-        try {
-            const json = isFunction(error.json) ? error.json() : null;
+    protected handleActivationRequestError(error: any): DsError {
+        let errorResult: any = {
+            title: 'ds.messages.formActivationError',
+        };
 
-            if (json && json.message) {
-                // this.toastr.error(json.message);
-                return json.message;
+        if (error instanceof Response) {
+            errorResult.message = 'ds.messages.http.' + error.status;
+            errorResult.type = error.status;
+        }
+        else {
+            try {
+                const json = isFunction(error.json) ? error.json() : null;
+
+                if (json && json.message) {
+                    errorResult.message = json.message;
+                    errorResult.type = error.status;
+                }
+            }
+            catch (exception) {
+
             }
         }
-        catch (exception) {
-            return 'ds.microservices.entity.scenario.activationFailure';
-        }
+
+        return errorResult as DsError;
     }
 
     /**
@@ -120,17 +133,29 @@ export class FormioApiService {
      * @param error
      */
     protected handleSubmissionRequestError(error: any): any {
-        try {
-            const json = isFunction(error.json) ? error.json() : null;
+        let errorResult: any = {
+            title: 'ds.messages.formSubmissionError',
+        };
 
-            if (json && json.message) {
-                // this.toastr.error(json.message);
-                return json.message;
+        if (error instanceof Response) {
+            errorResult.message = 'ds.messages.http.' + error.status;
+            errorResult.type = error.status;
+        }
+        else {
+            try {
+                const json = isFunction(error.json) ? error.json() : null;
+
+                if (json && json.message) {
+                    errorResult.message = json.message;
+                    errorResult.type = error.status;
+                }
+            }
+            catch (exception) {
+
             }
         }
-        catch (exception) {
-            return 'ds.microservices.entity.scenario.submissionFailure';
-        }
+
+        return errorResult as DsError;
     }
 
 }
