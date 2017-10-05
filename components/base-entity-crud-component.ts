@@ -13,6 +13,8 @@ import { Link } from '../../digitalstate/models/link';
 import 'rxjs/Rx';
 import { Subscriber} from 'rxjs/Subscriber';
 
+import isObject from 'lodash/isObject';
+
 export abstract class DsEntityCrudComponent {
 
     /**
@@ -123,7 +125,30 @@ export abstract class DsEntityCrudComponent {
         }
     }
 
+    /**
+     * Create and return an empty BackLink instance. Subclasses can override this to customize it's behaviour.
+     * @return {Link}
+     */
     protected getEmptyBackLink(): Link {
         return new Link;
+    }
+
+    /**
+     * Checks `entity` for property `propertyName` and returns its translated value if applicable.
+     * Otherwise, the value is returned as is or NULL if property does not exist in `entity`
+     *
+     * @param entity
+     * @param propertyName
+     * @return {any}
+     */
+    protected getTranslatedPropertyValue(entity: object, propertyName: string): any {
+        if (isObject(entity)) {
+            if (isObject(entity[propertyName]) && entity[propertyName][this.translate.currentLang]) {
+                return entity[propertyName][this.translate.currentLang];
+            }
+            else {
+                return entity[propertyName];
+            }
+        }
     }
 }
