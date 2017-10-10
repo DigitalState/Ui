@@ -21,6 +21,7 @@ export class FormioModalFrameComponent implements OnInit {
     @ViewChild('iframe') iframe: ElementRef;
 
     modalHeader: string;
+    modalBreadcrumbs: string;
     modalContent: string = ``;
 
     protected formioController: FormioController;
@@ -51,6 +52,11 @@ export class FormioModalFrameComponent implements OnInit {
     public setFormioController(formioController: FormioController) {
         this.formioController = formioController;
 
+    }
+
+    public setBreadcrumbs(breadcrumbs: Array<string>) {
+        breadcrumbs.push(this.translate.instant('general.form'));
+        this.modalBreadcrumbs = breadcrumbs.join(' › ');
     }
 
     closeModal(action?: any) {
