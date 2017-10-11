@@ -1,6 +1,8 @@
 @import "../../../app/theme/sass/conf/conf";
 
 .modal.formio-modal-frame {
+  font: 18px/1.5em $font-family;
+  color: $default-text;
 
   .modal-dialog {
     max-width: 100%;
