@@ -18,6 +18,11 @@ import isObject from 'lodash/isObject';
 export abstract class DsEntityCrudComponent {
 
     /**
+     * Set to TRUE in ngOnInit to indicate that the component has been initialized.
+     */
+    protected isInitialized: boolean;
+
+    /**
      * The pageTitle and pageSubtitle.
      */
     protected pageTitle: string;
@@ -90,6 +95,8 @@ export abstract class DsEntityCrudComponent {
         if (this.pageTitle) {
             this.applyPageTitle();
         }
+
+        this.isInitialized = true;
     }
 
     /**
