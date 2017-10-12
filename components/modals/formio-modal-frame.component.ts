@@ -3,6 +3,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
+import { ToastsManager } from 'ng2-toastr';
 
 import { FormioApiService } from '../../services/formio-api.service';
 import { FormioController } from './formio-controller';
@@ -33,6 +34,7 @@ export class FormioModalFrameComponent implements OnInit {
 
     constructor(private activeModal: NgbActiveModal,
                 protected translate: TranslateService,
+                protected toastr: ToastsManager,
                 protected formioApiService: FormioApiService,
                 domSanitizer: DomSanitizer) {
         this.frameSrc = domSanitizer.bypassSecurityTrustResourceUrl('formio.html?windowId=' + this.windowId);
@@ -156,10 +158,14 @@ export class FormioModalFrameComponent implements OnInit {
     protected showError(error: DsError) {
         let title = this.translate.instant(error.title);
         let message = this.translate.instant(error.message);
-        this.modalContent = `
-        <div class="alert alert-danger" role="alert">
-          <h4 class="alert-heading">${title}</h4>
-          <p>${message}</p>
-        </div>`;
+        // this.modalContent = `
+        // <div class="alert alert-danger" role="alert">
+        //   <h4 class="alert-heading">${title}</h4>
+        //   <p>${message}</p>
+        // </div>`;
+
+        this.toastr.error(message, title, {
+            'dismiss': 'click'
+        });
     }
 }
