@@ -47,10 +47,10 @@ export default class Tabs {
      * @param $container - parent of the items that will be tabbed together
      * @param $options - any overrides to the classes set below
      */
-    constructor(protected $container, protected options?) {
+    constructor(protected $container, protected options?, protected callbacks?: { [name: string]: Function }) {
 
         let defaults = {
-            default_tab: "0",                          // index of tab to open on page load
+            default_tab: 0,                          // index of tab to open on page load
             tab_class_panel: ".tabs-container__panel", // wrapper for each tab/accordion title and content
             tab_class_title: ".tabs-container__title", // title element for each tab/accordion
             tab_nav_id: "TabNav"                      // ID to provide the constructed tab navigation
@@ -256,6 +256,10 @@ export default class Tabs {
         if (this.tabNav) {
             this.updateTabNav();
         }
+
+        if (this.callbacks['onTabChange']) {
+            this.callbacks['onTabChange'].call(null, this.currentTab.position);
+        }
     };
 
     /**
@@ -386,6 +390,13 @@ export default class Tabs {
     destroy() {
         this.unbindNavEvents();
         this.unbindAccordionEvents();
+
+        // Destroy callbacks (if any)
+        if (this.callbacks) {
+            forEach(this.callbacks, (callback, callbackName) => {
+                this.callbacks[callbackName] = undefined;
+            });
+        }
     }
 }
 // $(function () {
