@@ -263,6 +263,19 @@ export default class Tabs {
     };
 
     /**
+     * Open a tab given its zero-based index.
+     * @param tabIndex
+     */
+    public openTabByIndex(tabIndex: number) {
+        let $tabPanel = this.$tab_panels.eq(tabIndex);
+
+        if (!this.isCurrentTab($tabPanel)) {
+            this.closeTab();
+            this.openTab($tabPanel);
+        }
+    }
+
+    /**
      * closes a tab if there's one open and a new one has been activated
      * Only one tab/accordion can be open at any given time
      */
