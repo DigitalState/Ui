@@ -10,7 +10,6 @@ import { MomentTimezoneModule } from 'angular-moment-timezone';
 import { ClipboardModule } from 'ngx-clipboard';
 
 // import { AppTranslationModule } from '../app.translation.module';
-import { AppState } from '../app.service';
 import { NgaModule } from '../../theme/nga.module';
 
 import { DsBaseEntityApiService } from './services/base-entity-api.service';
@@ -31,6 +30,7 @@ import { DsEntityTranslationService } from './services/entity-translation.servic
 import { DsStaticTranslationService } from './services/static-translation.service';
 import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe';
 import { DsClipboardCopyComponent } from './components/directives/ds-clipboard-copy.component';
+import { DsFileUploadComponent } from './components/file-upload.component';
 
 @NgModule({
     imports: [
@@ -52,6 +52,7 @@ import { DsClipboardCopyComponent } from './components/directives/ds-clipboard-c
         DsRelativeTimeComponent,
         DsLanguageSwitcherDropdownComponent,
         DsClipboardCopyComponent,
+        DsFileUploadComponent,
         FormioModalFrameComponent,
     ],
     entryComponents: [
@@ -81,11 +82,12 @@ import { DsClipboardCopyComponent } from './components/directives/ds-clipboard-c
         DsRelativeTimeComponent,
         DsLanguageSwitcherDropdownComponent,
         DsClipboardCopyComponent,
+        DsFileUploadComponent,
     ]
 })
 export class DsSharedModule {
 
-    constructor(private appState: AppState) {
+    constructor() {
 
     }
 
