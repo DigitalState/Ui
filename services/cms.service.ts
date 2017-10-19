@@ -133,6 +133,29 @@ export class CmsApiService extends DsBaseEntityApiService<any> {
         });
     }
 
+
+    /**
+     * Fetch one or more CMS entities in a batch request.
+     * @param slugsMap The requests search dictionary of [entityType] => [Array of Slugs]
+     *        The `entityType` must have `[]` appended to it in order to receive the entity collection.
+     * @return {Observable<R>}
+     */
+    public getContentBySlugs(slugsMap: { [entityType: string]: Array<string> }): Observable<any> {
+        return this.getRequestHeaders().flatMap((headers: Headers) => {
+            let url = this.contentPath;
+            let options = new RequestOptions({
+                headers: headers,
+                search: slugsMap,
+            });
+
+            return this.http.get(url, options)
+                .map((response: Response) => {
+                    return response.json();
+                })
+                .catch((response: Response) => Observable.throw(response));
+        });
+    }
+
     protected mergeTranslations(translationsContainer: any): any {
         let mergedTranslations = {};
         this.translationSlugs.forEach((translationKey) => {
@@ -157,10 +180,12 @@ export class CmsApiService extends DsBaseEntityApiService<any> {
         }
         else {
             return this.auth.getAnonymousToken().flatMap(token => {
+                this.token = token;
                 headers.set('Authorization', `Bearer ${token}`);
                 return Observable.of(headers);
             });
         }
     }
+
 }
 
