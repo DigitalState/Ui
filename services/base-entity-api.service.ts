@@ -1,8 +1,10 @@
 import { Observable } from 'rxjs';
 
 import { Restangular } from 'ngx-restangular';
+
 import { PagedData } from '../../digitalstate/models/paged-data';
 import { ListQuery } from '../../digitalstate/models/api-query';
+import { GeneralUtils } from '../utils/general.utils';
 
 import 'rxjs/Rx';
 
@@ -64,6 +66,12 @@ export abstract class DsBaseEntityApiService<T> {
             .reduce((pagedData, fetchedCollection) => {
                 query.pager.totalItems = fetchedCollection.metadata['hydra:totalItems'];
                 query.pager.totalPages = Math.ceil(query.pager.totalItems / query.pager.size);
+
+                // The current page value received from the API (if any) overrides current page number on the client-side
+                const currentQueryPathParams = GeneralUtils.parseQueryString(fetchedCollection.metadata['hydra:view']['@id']);
+                if (currentQueryPathParams.page) {
+                    query.pager.pageNumber = parseInt(currentQueryPathParams.page);
+                }
 
                 pagedData.pager = query.pager;
                 pagedData.data = fetchedCollection.map(this.mapToEntity);
