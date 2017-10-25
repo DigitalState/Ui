@@ -123,8 +123,8 @@ export abstract class DsEntityCrudComponent {
      */
     protected generateBackLink() {
         if (this.entityParent
-            && this.entityParent.hasOwnProperty('title')
-            && this.entityParent.title.hasOwnProperty(this.translate.currentLang)) {
+            && this.entityParent.hasOwnProperty('title')) {
+            // && this.entityParent.title.hasOwnProperty(this.translate.currentLang)) {
 
             this.backLink = new Link;
             this.backLink.routerLink = ['/', 'pages', this.entityParentUrlPrefix, this.entityParent.uuid, 'show'];
