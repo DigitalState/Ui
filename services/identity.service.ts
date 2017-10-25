@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, Injector } from '@angular/core';
 
 import { Restangular } from 'ngx-restangular';
 
@@ -14,9 +14,10 @@ import 'rxjs/Rx';
 export class IdentityApiService extends DsBaseEntityApiService<any> {
 
     constructor(public restangular: Restangular,
+                protected injector: Injector,
                 protected appState: AppState,
                 protected auth: AuthService) {
-        super();
+        super(restangular, injector);
 
         let msConfig = new MicroserviceConfig();
         msConfig.name = 'identities';

@@ -1,17 +1,22 @@
-import { Observable } from 'rxjs';
+import { Injector } from '@angular/core';
 
 import { Restangular } from 'ngx-restangular';
 
+import { AppState } from '../../app.service';
 import { PagedData } from '../../digitalstate/models/paged-data';
 import { ListQuery } from '../../digitalstate/models/api-query';
 import { GeneralUtils } from '../utils/general.utils';
 
 import 'rxjs/Rx';
+import { Observable } from 'rxjs';
 
 /**
  * Generic type <T> refers to an entity model such as Service, Case, etc...
  */
 export abstract class DsBaseEntityApiService<T> {
+
+    protected appState: AppState;
+    protected spaId: string;
 
     /**
      * Constructor
@@ -19,8 +24,12 @@ export abstract class DsBaseEntityApiService<T> {
      * settings (such as Base URL) that are specific to the EntityApiService extending
      * this class.
      */
-    constructor(public restangular?: Restangular) {
-
+    constructor(public restangular?: Restangular,
+                protected injector?: Injector) {
+        if (injector) {
+            this.appState = injector.get(AppState);
+            this.spaId = this.appState.get('config')['spaId'];
+        }
     }
 
     /**
@@ -67,10 +76,12 @@ export abstract class DsBaseEntityApiService<T> {
                 query.pager.totalItems = fetchedCollection.metadata['hydra:totalItems'];
                 query.pager.totalPages = Math.ceil(query.pager.totalItems / query.pager.size);
 
-                // The current page value received from the API (if any) overrides current page number on the client-side
-                const currentQueryPathParams = GeneralUtils.parseQueryString(fetchedCollection.metadata['hydra:view']['@id']);
-                if (currentQueryPathParams.page) {
-                    query.pager.pageNumber = parseInt(currentQueryPathParams.page);
+                if (this.spaId === 'portal') {
+                    // The current page value received from the API (if any) overrides current page number on the client-side
+                    const currentQueryPathParams = GeneralUtils.parseQueryString(fetchedCollection.metadata['hydra:view']['@id']);
+                    if (currentQueryPathParams.page) {
+                        query.pager.pageNumber = parseInt(currentQueryPathParams.page);
+                    }
                 }
 
                 pagedData.pager = query.pager;
