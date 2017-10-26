@@ -69,14 +69,20 @@ export abstract class DsEntityCrudComponent {
      * the API service configurations are Microservice-specific.
      */
     protected entityApiService: DsBaseEntityApiService<any>;
-
     protected translate: TranslateService;
+
     protected router: Router;
     protected route: ActivatedRoute;
     protected location: Location;
     protected toastr: ToastsManager;
     protected globalState: GlobalState;
     protected appState: AppState;
+
+    /**
+     * @placeholder
+     * Use to confirm route deactivation on a CRUD component subclass
+     */
+    public confirmBeforeRouteDeactivation: boolean;
 
 
     constructor(protected injector: Injector) {
