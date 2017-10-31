@@ -69,14 +69,20 @@ export abstract class DsEntityCrudComponent {
      * the API service configurations are Microservice-specific.
      */
     protected entityApiService: DsBaseEntityApiService<any>;
-
     protected translate: TranslateService;
+
     protected router: Router;
     protected route: ActivatedRoute;
     protected location: Location;
     protected toastr: ToastsManager;
     protected globalState: GlobalState;
     protected appState: AppState;
+
+    /**
+     * @placeholder
+     * Use to confirm route deactivation on a CRUD component subclass
+     */
+    public confirmBeforeRouteDeactivation: boolean;
 
 
     constructor(protected injector: Injector) {
@@ -121,15 +127,26 @@ export abstract class DsEntityCrudComponent {
     /**
      * For subclasses to be notified of the completion of entity preparation.
      */
-    protected generateBackLink() {
-        if (this.entityParent
-            && this.entityParent.hasOwnProperty('title')
-            && this.entityParent.title.hasOwnProperty(this.translate.currentLang)) {
+    protected generateBackLink(): Link {
+        if (this.entityParent) {
+            // && this.entityParent.hasOwnProperty('title')) {
+            // && this.entityParent.title.hasOwnProperty(this.translate.currentLang)) {
 
-            this.backLink = new Link;
+            // Create a new back link instance only if none has been initialized by the child component
+            // This helps child components define the text of the link and lets this function determine the route
+            if (!this.backLink) {
+                this.backLink = new Link;
+            }
+
             this.backLink.routerLink = ['/', 'pages', this.entityParentUrlPrefix, this.entityParent.uuid, 'show'];
-            this.backLink.text = this.entityParent.title[this.translate.currentLang];
+
+            if (this.entityParent.hasOwnProperty('title'))
+            {
+                this.backLink.text = this.entityParent.title[this.translate.currentLang];
+            }
         }
+
+        return this.backLink;
     }
 
     /**
