@@ -23,7 +23,7 @@ export class AuthService {
 
     protected authUrlPrefix;
     protected registrationPath;
-    protected loginPath;
+    // protected loginPath;
     protected anonymousPath;
     protected jwtHelper: JwtHelper;
     protected authUser;
@@ -43,7 +43,7 @@ export class AuthService {
         this.authUrlPrefix = config.entrypoint.url;
         this.registrationPath = this.authUrlPrefix + config.paths.registration;
         this.anonymousPath = this.authUrlPrefix + config.paths.anonymous;
-        this.loginPath = this.authUrlPrefix + config.paths.login;
+        // this.loginPath = this.authUrlPrefix + config.paths.login;
         this.jwtHelper = new JwtHelper();
 
         // Initialize authUser if a valid token exists
@@ -110,12 +110,13 @@ export class AuthService {
     /**
      * Submit a login request and update the user session if successful.
      *
+     * @param relativeAuthUrl A relative URL to the authentication endpoint (e.g: `tokens/individual`)
      * @param email
      * @param password
      * @return Observable
      */
-    login(email: string, password: string): Observable<any> {
-        let url = this.loginPath;
+    login(relativeAuthUrl: string, email: string, password: string): Observable<any> {
+        let url = this.authUrlPrefix + relativeAuthUrl;
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let options = new RequestOptions({ headers: headers });
 

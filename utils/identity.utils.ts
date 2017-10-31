@@ -6,6 +6,7 @@ export class IdentityUtils {
             case 'Anonymous': return 'anonymouses';
             case 'BusinessUnit': return 'business-units';
             case 'Individual': return 'individuals';
+            case 'Organization': return 'organizations';
             case 'Staff': return 'staffs';
             default: return null
         }
@@ -15,6 +16,7 @@ export class IdentityUtils {
         switch (identityType) {
             case 'Anonymous': return 'anonymouse-personas';
             case 'Individual': return 'individual-personas';
+            case 'Organization': return 'organization-personas';
             case 'Staff': return 'staff-personas';
             default: return null
         }
@@ -28,6 +30,9 @@ export class IdentityUtils {
             case 'Individual':
             case 'individuals':
                 return 'individual';
+            case 'Organization':
+            case 'organizations':
+                return 'organization';
             case 'Staff':
             case 'staffs':
                 return 'staff';
@@ -42,6 +47,8 @@ export class IdentityUtils {
                 return 'anonymouses';
             case 'individual':
                 return 'individuals';
+            case 'organization':
+                return 'organizations';
             case 'staff':
                 return 'staffs';
             default:
