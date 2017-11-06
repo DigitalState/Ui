@@ -98,7 +98,7 @@ export class AuthService {
         let options = new RequestOptions({ headers: headers });
 
         let body = new URLSearchParams();
-        body.set('username', registration.email);
+        body.set('username', registration.username);
         body.set('password', registration.password);
         body.set('data', JSON.stringify(registration.data));
 
