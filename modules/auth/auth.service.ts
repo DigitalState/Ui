@@ -12,8 +12,9 @@ import { IdentityUtils } from '../../utils/identity.utils';
 import { DsEnvironmentConfig } from '../../providers/environment.provider';
 import { MicroservicesDefinition } from '../../../digitalstate/microservices';
 
-import { Observable } from 'rxjs';
 import 'rxjs/Rx';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 
 import isEmpty from 'lodash/isEmpty';
 import pick from 'lodash/pick';
@@ -27,6 +28,9 @@ export class AuthService {
     protected anonymousPath;
     protected jwtHelper: JwtHelper;
     protected authUser;
+
+    protected anonymousToken: string;
+    protected anonymousTokenSubject: Subject<string>;
 
     constructor(protected appState: AppState,
                 protected router: Router,
@@ -52,18 +56,43 @@ export class AuthService {
             const decodedToken = this.decodeToken(token);
             this.createAuthUser(decodedToken);
         }
+
+        // Initialize the anonymous token subject with an empty value
+        this.anonymousTokenSubject = new Subject();
+        this.loadAnonymousToken();
     }
 
-    getAnonymousToken(): Observable<string> {
+    loadAnonymousToken(): void {
         let url = this.anonymousPath;
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.post(url, '', options)
-            .map((response: Response) => {
-                return response.json().token;
-            })
-            .catch((response: Response) => Observable.throw(response.json()));
+        this.http.post(url, '', options)
+            .subscribe(
+                (response: Response) => {
+                    this.anonymousToken = response.json().token;
+                    this.anonymousTokenSubject.next(this.anonymousToken);
+                    this.anonymousTokenSubject.complete();
+                },
+                (error: any) => {
+                    console.error('Error while requesting anonymous token', error);
+                    alert('Error while requesting anonymous token');
+                }
+            );
+        // return this.http.post(url, '', options)
+        //     .map((response: Response) => {
+        //         return response.json().token;
+        //     })
+        //     .catch((response: Response) => Observable.throw(response.json()));
+    }
+
+    getAnonymousToken(): Observable<string> {
+        if (this.anonymousToken) {
+            return Observable.of(this.anonymousToken);
+        }
+        else {
+            return this.anonymousTokenSubject.asObservable();
+        }
     }
 
     getAuthUser(): User {
