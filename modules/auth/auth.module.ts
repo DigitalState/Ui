@@ -3,8 +3,6 @@ import {Http, RequestOptions, HttpModule} from '@angular/http';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
 
 import { AppState } from '../../../app.service';
-import { AuthService } from './auth.service';
-import { AuthGuardService } from './auth-guard.service';
 import { LogoutComponent } from './logout.component';
 
 export const DS_JWT_TOKEN_NAME = 'token';
@@ -27,16 +25,10 @@ export function authHttpServiceFactory(appState: AppState, http: Http, options: 
         LogoutComponent
     ],
     providers: [
-        AuthService, 
-        AuthGuardService,
-        {
-            provide: AuthHttp,
-            useFactory: authHttpServiceFactory,
-            deps: [AppState, Http, RequestOptions]
-        }
+        // Providers have been adopted by the shared.module for static exporting
     ]
 })
-export class DSAuthModule {
+export class DsAuthModule {
 
     constructor(protected appState: AppState) {
         appState.set('jwtTokenName', DS_JWT_TOKEN_NAME);

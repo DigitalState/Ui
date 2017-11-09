@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule }  from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +13,6 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { NgaModule } from '../../theme/nga.module';
 
 import { DsBaseEntityApiService } from './services/base-entity-api.service';
-import { DSAuthModule } from './modules/auth/auth.module';
 
 import { MICROSERVICES } from './microservices';
 import { CmsApiService } from './services/cms.service';
@@ -32,6 +31,13 @@ import { DsStaticTranslatePipe } from './components/pipes/static-translate.pipe'
 import { DsClipboardCopyComponent } from './components/directives/ds-clipboard-copy.component';
 import { DsFileUploadComponent } from './components/file-upload.component';
 
+import { authHttpServiceFactory, DsAuthModule } from './modules/auth/auth.module';
+import { AuthService } from './modules/auth/auth.service';
+import { AuthGuardService } from './modules/auth/auth-guard.service';
+import { AuthHttp } from 'angular2-jwt';
+import { AppState } from '../app.service';
+import { Http, RequestOptions } from '@angular/http';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -42,7 +48,7 @@ import { DsFileUploadComponent } from './components/file-upload.component';
         MomentModule,
         MomentTimezoneModule,
         ClipboardModule,
-        DSAuthModule,
+        DsAuthModule,
     ],
     declarations: [
         IsEmpty, IsNotEmpty, // lodash helpers
@@ -60,12 +66,7 @@ import { DsFileUploadComponent } from './components/file-upload.component';
     ],
     providers: [
         DateFormatPipe,
-        DsEntityTranslationService,
-        DsStaticTranslationService,
-        CmsApiService,
-        CmsTranslateLoader,
-        IdentityApiService,
-        FormioApiService,
+        // Singleton providers are defined in the static forRoot() method below
     ],
     exports: [
         MdProgressSpinnerModule,
@@ -87,8 +88,31 @@ import { DsFileUploadComponent } from './components/file-upload.component';
 })
 export class DsSharedModule {
 
-    constructor() {
+    /**
+     * Singleton providers
+     * @return ModuleWithProviders
+     */
+    static forRoot(): ModuleWithProviders {
+        return {
+            ngModule: DsSharedModule,
+            providers: [
+                DsEntityTranslationService,
+                DsStaticTranslationService,
+                CmsApiService,
+                CmsTranslateLoader,
+                IdentityApiService,
+                FormioApiService,
 
+                // Adopted submodules providers
+                AuthService,
+                AuthGuardService,
+                {
+                    provide: AuthHttp,
+                    useFactory: authHttpServiceFactory,
+                    deps: [AppState, Http, RequestOptions]
+                }
+            ]
+        };
     }
 
 }
