@@ -17,7 +17,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 
 import isEmpty from 'lodash/isEmpty';
-import pick from 'lodash/pick';
+import forEach from 'lodash/forEach';
+
 
 @Injectable()
 export class AuthService {
@@ -123,15 +124,13 @@ export class AuthService {
      */
     register(registration: Registration) {
         let url = this.registrationPath;
-        let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        let headers = new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.anonymousToken
+        });
         let options = new RequestOptions({ headers: headers });
 
-        let body = new URLSearchParams();
-        body.set('username', registration.username);
-        body.set('password', registration.password);
-        body.set('data', JSON.stringify(registration.data));
-
-        return this.http.post(url, body.toString(), options)
+        return this.http.post(url, registration, options)
             .map((response: Response) => response.ok)
             .catch((response: Response) => Observable.throw(response.json()));
     }
@@ -271,4 +270,19 @@ export class AuthService {
             this.authUser.extra = userExtra;
         }
     }
+
+    // protected buildCommonHeaders(otherHeaders?: { [name: string]: any }): Headers {
+    //     let headers = new Headers({
+    //         'Content-Type': 'application/json'
+    //     });
+    //
+    //     if (otherHeaders) {
+    //         forEach(otherHeaders, (value, key) => {
+    //             headers.set(key, value);
+    //         });
+    //     }
+    //
+    //     return headers;
+    // }
+
 }
