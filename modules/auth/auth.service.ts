@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { tokenNotExpired, AuthHttp, JwtHelper } from 'angular2-jwt';
 import { Locker } from 'angular-safeguard';
+import { WINDOW } from 'ngx-window-token';
 
 import { AppState } from '../../../app.service';
 import { Registration } from './registration';
@@ -38,7 +39,11 @@ export class AuthService {
                 protected http: Http,
                 protected authHttp: AuthHttp,
                 protected locker: Locker,
+                @Inject(WINDOW) protected window,
                 dsEnv: DsEnvironmentConfig) {
+
+        // Set the dynamically injected Microservices hosts before passing it to the definition builder
+        dsEnv.dsDiscoveryEnv = this.window['dsDiscoveryEnv'];
 
         // Load the microservices settings here since the AuthService is a super dependency
         let microservices = new MicroservicesDefinition(dsEnv).getAll();
