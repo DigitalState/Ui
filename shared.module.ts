@@ -18,6 +18,7 @@ import { MICROSERVICES } from './microservices';
 import { CmsApiService } from './services/cms.service';
 import { CmsTranslateLoader } from './services/cms-translation-loader.service';
 import { IdentityApiService } from './services/identity.service';
+import { UserApiService } from './services/user-api.service';
 import { FormioApiService } from './services/formio-api.service';
 import { FormioModalFrameComponent } from './components/modals/formio-modal-frame.component';
 import { DsRelativeTimeComponent } from './components/relative-time.component';
@@ -101,6 +102,7 @@ export class DsSharedModule {
                 CmsApiService,
                 CmsTranslateLoader,
                 IdentityApiService,
+                UserApiService,
                 FormioApiService,
 
                 // Adopted submodules providers
