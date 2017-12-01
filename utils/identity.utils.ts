@@ -1,6 +1,27 @@
 
 export class IdentityUtils {
 
+    static getUppercaseIdentityName(identity: string): string {
+        switch (identity) {
+            case 'anonymous':
+            case 'anonymouses':
+                return 'Anonymous';
+            case 'business-unit':
+            case 'business-units':
+                return 'BusinessUnit';
+            case 'individual':
+            case 'individuals':
+                return 'Individual';
+            case 'organization':
+            case 'organizations':
+                return 'Organization';
+            case 'staff':
+            case 'staffs':
+                return 'Staff';
+            default: return null
+        }
+    }
+
     static getIdentityUrlPrefix(identityType: string): string {
         switch (identityType) {
             case 'Anonymous': return 'anonymouses';
