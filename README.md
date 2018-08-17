@@ -2,6 +2,8 @@
 
 The ui repository provides a wide range of commonly used components for DigitalState Spas.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 ## Table of Contents
 
 - [Documentation](#documentation)
